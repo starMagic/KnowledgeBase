@@ -1,0 +1,57 @@
+Ollama配置
+install docker for windows
+check: "Use WSL 2 instead of Hyper-V (recommended)"
+check docker:
+docker --version
+docker-compose --version
+install Ollama
+ollama --verion
+verify Ollama
+localhost:11434 (Ollama 本机默认端口号，11434）
+Print> Ollama is running
+install model
+语言模型：qwen:7b
+ollama pull qwen:7b
+向量模型：shaw/dmeta-embedding-zh
+ollama pull shaw/dmeta-embedding-zh
+check models
+ollama list
+test model api:
+for dmeta on windows: https://ollama.com/shaw/dmeta-embedding-zh
+PS> Invoke-WebRequest -Uri "http://localhost:11434/api/embeddings" -Method Post -ContentType "application/json" -Body '{"model": "shaw/dmeta-embedding-zh", "prompt": "天空是灰色的"}'
+
+安装fastGPT依赖
+下载docker文件和config文件
+mkdir myQA
+cd myQA
+curl -0 https://github.com/starMagic/KnowledgeBase/blob/main/docker-compose.yml
+curl -0 https://github.com/starMagic/KnowledgeBase/blob/main/config.json
+启动docker
+~myQA> docker-compose up -d
+访问FastGPT和oneAPI
+FastGPT：http://localhost:3000 (change password in DEFAULT_ROOT_PSW of docker-compose.yml)
+username: root
+password: 1234
+oneAPI：http://localhost:3001
+username: root
+password: 123456
+
+配置OneAPI
+添加模型：http://localhost:3001/channel
+配置大语言模型
+类型：Ollama
+名称：ollama-qwen:7b
+模型：输入自定义模型名称，qwen:7b
+秘钥：随便填，比如123
+代理：http://host.docker.internal:11434
+注意：docker默认使用的是桥接(Bridge)模式。容器之间可以互相通信，但是容器无法直接访问宿主机。如果用localhost，实际访问的是容器自己；用host.docker.internal访问的才是宿主。
+配置Embedding向量模型
+类型：Ollama
+名称：ollama-dmeta-embedding-zh
+模型：输入自定义模型名称，shaw/dmeta-embedding-zh
+秘钥：随便填，比如123
+代理：http://host.docker.internal:11434
+FastGPT http://localhost:3000
+用户名：root
+密码：1234  (docker-compose.yml : DEFAULT_ROOT_PSW)
+
